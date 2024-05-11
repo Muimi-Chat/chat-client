@@ -1,6 +1,20 @@
 <script>
+	export const prerender = true;
+
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, initializeStores } from '@skeletonlabs/skeleton';
+	initializeStores();
+
+	import { onMount } from 'svelte';
+
+	import { themePreference } from '$lib/store/themePreference';
+	import { get } from 'svelte/store'
+
+	onMount(() => {
+		document.body.setAttribute('data-theme', get(themePreference));
+	});
+
+	import Socials from '$lib/components/appBar/Socials.svelte'
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -20,6 +34,8 @@
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
+	import SectionSelectors from '$lib/components/appBar/SectionSelectors.svelte';
+	import ThemeSelector from '$lib/components/appBar/ThemeSelector.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
 
@@ -27,35 +43,16 @@
 <AppShell>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
-		<AppBar>
+		<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
 			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Skeleton</strong>
+				<h3 class="h3 ml-auto">Muimi</h3>
 			</svelte:fragment>
+				<SectionSelectors/>
 			<svelte:fragment slot="trail">
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/EXqV7W8MtY"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Discord
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://twitter.com/SkeletonUI"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Twitter
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/skeletonlabs/skeleton"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
+				<div class="mr-auto">
+					<Socials/>
+					<ThemeSelector/>
+				</div>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
