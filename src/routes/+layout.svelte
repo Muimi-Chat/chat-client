@@ -1,22 +1,26 @@
 <script>
-	export const prerender = true;
-
 	import '../app.postcss';
 	import { AppShell, AppBar, initializeStores } from '@skeletonlabs/skeleton';
+	import { getSessionCookie } from '$lib/cookies/sessionCookie';
 	initializeStores();
 
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+
+	// Check if current URL route is `/login` or `/register`
+	let isLoginOrRegisterRoute = true;
 
 	import { themePreference } from '$lib/store/themePreference';
-	import { get } from 'svelte/store'
-
 	onMount(() => {
 		document.body.setAttribute('data-theme', get(themePreference));
+
+		const currentRoute = window.location.pathname;
+		isLoginOrRegisterRoute = currentRoute === '/login' || currentRoute === '/register'
 	});
 
-	import Socials from '$lib/components/appBar/Socials.svelte'
+	import Socials from '$lib/components/appBar/Socials.svelte';
 
-	// Highlight JS
+	//#region Highlight JS
 	import hljs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/github-dark.css';
 	import { storeHighlightJs } from '@skeletonlabs/skeleton';
@@ -30,13 +34,20 @@
 	hljs.registerLanguage('javascript', javascript);
 	hljs.registerLanguage('typescript', typescript);
 	storeHighlightJs.set(hljs);
+	//#endregion
 
-	// Floating UI for Popups
+	//#region Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
+
+	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	//#endregion
+
 	import SectionSelectors from '$lib/components/appBar/SectionSelectors.svelte';
 	import ThemeSelector from '$lib/components/appBar/ThemeSelector.svelte';
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	import AuthenticationSelector from '$lib/components/appBar/AuthenticationSelector.svelte';
+
+	const sessionToken = getSessionCookie();
 </script>
 
 <!-- App Shell -->
@@ -47,11 +58,20 @@
 			<svelte:fragment slot="lead">
 				<h3 class="h3 ml-auto">Muimi</h3>
 			</svelte:fragment>
-				<SectionSelectors/>
+
+			{#if !isLoginOrRegisterRoute}
+				<!--Show proper navigation if authenticated, otherwise a simple login/register button-->
+				{#if sessionToken !== undefined}
+					<SectionSelectors />
+				{:else}
+					<AuthenticationSelector />
+				{/if}
+			{/if}
+
 			<svelte:fragment slot="trail">
 				<div class="mr-auto">
-					<Socials/>
-					<ThemeSelector/>
+					<Socials />
+					<ThemeSelector />
 				</div>
 			</svelte:fragment>
 		</AppBar>
