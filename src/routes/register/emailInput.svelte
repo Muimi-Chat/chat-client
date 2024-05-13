@@ -19,6 +19,8 @@
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!value.trim()) {
             error = "Email is required";
+        } else if (value.length > 256) {
+            error = "Your email is too long!"
         } else if (!emailRegex.test(value)) {
             error = "Enter a valid email!"
         } else {

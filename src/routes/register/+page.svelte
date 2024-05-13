@@ -1,6 +1,22 @@
 <script>
 	import { Stretch } from 'svelte-loading-spinners';
 	import Icon from '@iconify/svelte';
+    import { onMount } from 'svelte';
+    import { get, writable } from 'svelte/store';
+	import { getUserAuthenticationCSRFToken } from '$lib/services/csrfTokenFetcher/getUserAuthenticationCSRFToken';
+	import { registerUserAPI } from '$lib/services/authentication/registerUserAPI';
+
+    // Store for CSRF token
+    let csrfToken = ""
+	onMount(() => {
+		getUserAuthenticationCSRFToken()
+		.then((token) => {
+			csrfToken = token
+		}).catch((error) => {
+			console.error(`Failed to fetch CRSF Token :: ${error}`)
+			// TODO: Display error to the user...
+		})
+	});
 
 	import UsernameInput from './usernameInput.svelte';
 	let username = '';
@@ -12,14 +28,13 @@
 	let emailShowLoginInstead = false;
 
 	import PasswordInput from './passwordInput.svelte';
-	import { registerUserAPI } from '$lib/services/authentication/registerUserAPI';
 	let password = '';
 	let passwordError = '';
 
 	let messageToAdmin = '';
 
 	let genericError = '';
-	$: alertVisible = true;
+	$: alertVisible = false;
 
 	$: loadingAPI = false;
 
@@ -39,22 +54,25 @@
 
 		try {
 			loadingAPI = true;
-			const result = await registerUserAPI(username, email, password, messageToAdmin);
+
+			console.debug(`Using token :: ${csrfToken}`)
+			const result = await registerUserAPI(username, email, password, messageToAdmin, csrfToken);
+			console.debug(result);
 
 			if (result.status === 'SUCCESS') {
-				alertVisible = true
+				alertVisible = true;
 				// TODO: Maybe redirect after to some other page after few seconds?
 			} else if (result.status === 'USERNAME_TAKEN') {
 				usernameError = 'The username has been taken!';
 			} else if (result.status === 'EMAIL_TAKEN') {
-				emailError = 'The email has been used!<a>Forgot password?</a>';
+				emailError = 'The email has been used! Forgot password?';
 			} else {
-				genericError = 'Unknown Error, try again or contact admin if persists!';
+				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}
 		} catch (error) {
 			// @ts-ignore
 			console.error(error.message);
-			genericError = 'Unknown Error, try again or contact admin if persists!';
+			genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 		} finally {
 			loadingAPI = false;
 		}
@@ -92,44 +110,45 @@
 {/if}
 
 <div class="container h-full mx-auto justify-center items-center">
-	<UsernameInput bind:disabled={loadingAPI} bind:error={usernameError} bind:value={username} />
 
-	<EmailInput
-		bind:disabled={loadingAPI}
-		bind:showLoginInstead={emailShowLoginInstead}
-		bind:error={emailError}
-		bind:value={email}
-	/>
+		<UsernameInput bind:disabled={loadingAPI} bind:error={usernameError} bind:value={username} />
 
-	<PasswordInput bind:disabled={loadingAPI} bind:error={passwordError} bind:value={password} />
-
-	<label class="mt-3 label">
-		<span>Message</span>
-		<textarea
-			disabled={loadingAPI}
-			class="textarea"
-			rows="4"
-			bind:value={messageToAdmin}
-			placeholder="(Optional) Messages for admins to review"
+		<EmailInput
+			bind:disabled={loadingAPI}
+			bind:showLoginInstead={emailShowLoginInstead}
+			bind:error={emailError}
+			bind:value={email}
 		/>
-	</label>
 
-	{#if loadingAPI}
-		<div>
-			<Stretch size="60" color="#FF3E00" unit="px" duration="1s" />
-		</div>
-	{/if}
+		<PasswordInput bind:disabled={loadingAPI} bind:error={passwordError} bind:value={password} />
 
-	<button
-		type="button"
-		disabled={registrationDisabled || loadingAPI}
-		class="mt-3 btn variant-filled"
-		on:click={register}
-	>
-		Register
-	</button>
+		<label class="mt-3 label">
+			<span>Message</span>
+			<textarea
+				disabled={loadingAPI}
+				class="textarea"
+				rows="4"
+				bind:value={messageToAdmin}
+				placeholder="(Optional) Messages for admins to review"
+			/>
+		</label>
 
-	{#if genericError.length !== 0}
-		<p class="text-red-500">{genericError}</p>
-	{/if}
+		{#if loadingAPI}
+			<div>
+				<Stretch size="60" color="#FF3E00" unit="px" duration="1s" />
+			</div>
+		{/if}
+
+		<button
+			type="button"
+			disabled={registrationDisabled || loadingAPI}
+			class="mt-3 btn variant-filled"
+			on:click={register}
+		>
+			Register
+		</button>
+
+		{#if genericError.length !== 0}
+			<p class="text-red-500">{genericError}</p>
+		{/if}
 </div>
