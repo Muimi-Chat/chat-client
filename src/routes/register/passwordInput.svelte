@@ -1,61 +1,113 @@
 <script>
-	import Icon from '@iconify/svelte';
-
+    import Icon from '@iconify/svelte';
+    import zxcvbn from 'zxcvbn';
+  
     export let value = '';
     export let error = '';
-    export let disabled = false
-
-    let showPassword = false
+    export let disabled = false;
+  
+    let showPassword = false;
     let inputClasses = 'input-group input-group-divider grid-cols-[1fr_auto]';
-    
-     $: {
-        inputClasses = 'input-group input-group-divider grid-cols-[1fr_auto]' + (error.length ? ' input-warning' : '');
+    let passwordStrength = 0;
+    let strengthText = '';
+    let strengthColor = 'red';
+  
+    $: {
+      inputClasses = 'input-group input-group-divider grid-cols-[1fr_auto]' + (error.length ? ' input-warning' : '');
     }
-
+  
+    $: {
+      const result = zxcvbn(value);
+      passwordStrength = result.score;
+      strengthText = getPasswordStrengthText(passwordStrength);
+      strengthColor = getPasswordStrengthColor(passwordStrength);
+    }
+  
     // @ts-ignore
     function handleChange(event) {
-        value = event.target.value;
+      value = event.target.value;
     }
-
+  
     function handleBlur() {
-		const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/;
-		if (value.length === 0) {
-			error = 'Password is required';
-		} else if (value.length < 8) {
-            error = 'Password must be at least 8 characters long'
-        } else if (!passwordRegex.test(value)) {
-			error = 'Password must contain at least one letter and one number';
-		} else {
-			error = '';
-		}
+      const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/;
+      if (value.length === 0) {
+        error = 'Password is required';
+      } else if (value.length < 8) {
+        error = 'Password must be at least 8 characters long';
+      } else if (!passwordRegex.test(value)) {
+        error = 'Password must contain at least one letter and one number';
+      } else {
+        error = '';
+      }
     }
-</script>
-
-<h6 class="h6 mt-3">Password</h6>
-<div class={inputClasses}>
+  
+    function getPasswordStrengthText(score) {
+      switch (score) {
+        case 0:
+          return 'Very weak';
+        case 1:
+          return 'Weak';
+        case 2:
+          return 'Fair';
+        case 3:
+          return 'Good';
+        case 4:
+          return 'Strong';
+        default:
+          return '';
+      }
+    }
+  
+    function getPasswordStrengthColor(score) {
+      switch (score) {
+        case 0:
+          return 'red';
+        case 1:
+          return 'orange';
+        case 2:
+          return 'yellow';
+        case 3:
+          return 'blue';
+        case 4:
+          return 'green';
+        default:
+          return 'red';
+      }
+    }
+  </script>
+  
+  <h6 class="h6 mt-3">Password</h6>
+  <div class={inputClasses}>
     <input type={showPassword ? 'text' : 'password'} disabled={disabled} placeholder="Enter password..." on:blur={handleBlur} on:input={handleChange} />
     {#if showPassword}
-        <div>
-            <button
-                type="button"
-                class="btn-icon !bg-transparent"
-                on:click={() => (showPassword = !showPassword)}
-            >
-                <Icon icon="gridicons:not-visible" />
-            </button>
-        </div>
+      <div>
+        <button
+          type="button"
+          class="btn-icon !bg-transparent"
+          on:click={() => (showPassword = !showPassword)}
+        >
+          <Icon icon="gridicons:not-visible" />
+        </button>
+      </div>
     {:else}
-        <div>
-            <button
-                type="button"
-                class="btn-icon !bg-transparent"
-                on:click={() => (showPassword = !showPassword)}
-            >
-                <Icon icon="gridicons:visible" />
-            </button>
-        </div>
+      <div>
+        <button
+          type="button"
+          class="btn-icon !bg-transparent"
+          on:click={() => (showPassword = !showPassword)}
+        >
+          <Icon icon="gridicons:visible" />
+        </button>
+      </div>
     {/if}
-</div>
-{#if error.length !== 0}
+  </div>
+  {#if error.length !== 0}
     <p class="text-red-500">{error}</p>
-{/if}
+  {/if}
+  {#if value.length > 0}
+    <div class="mt-2">
+      <div class="password-strength-bar" style="background-color: {strengthColor}; width: {passwordStrength * 25}%; height: 5px;"></div>
+      <p class="text-gray-500">{strengthText}</p>
+    </div>
+  {/if}
+  
