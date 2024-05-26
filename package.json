@@ -6,7 +6,7 @@
     "dev": "vite dev",
     "hdev": "vite dev --host --port 44818",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --port 3000 --host",
     "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
     "test": "npm run test:integration && npm run test:unit",

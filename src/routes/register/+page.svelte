@@ -2,7 +2,6 @@
 	import { Stretch } from 'svelte-loading-spinners';
 	import Icon from '@iconify/svelte';
     import { onMount } from 'svelte';
-    import { get, writable } from 'svelte/store';
 	import { getUserAuthenticationCSRFToken } from '$lib/services/csrfTokenFetcher/getUserAuthenticationCSRFToken';
 	import { registerUserAPI } from '$lib/services/authentication/registerUserAPI';
 
@@ -31,8 +30,6 @@
 	let password = '';
 	let passwordError = '';
 
-	let messageToAdmin = '';
-
 	let genericError = '';
 	$: alertVisible = false;
 
@@ -56,7 +53,7 @@
 			loadingAPI = true;
 
 			console.debug(`Using token :: ${csrfToken}`)
-			const result = await registerUserAPI(username, email, password, messageToAdmin, csrfToken);
+			const result = await registerUserAPI(username, email, password, csrfToken);
 			console.debug(result);
 
 			if (result.status === 'SUCCESS') {
@@ -93,12 +90,11 @@
 		<div>
 			<Icon icon="icon-park-outline:success" height="auto" />
 		</div>
-		<!-- Message -->
+		<!-- TODO: Ask for email auth -->
 		<div class="alert-message">
 			<h3 class="h3">Account Request Success!</h3>
-			<p>An account has been successfully requested!</p>
-			<p>Admins takes some time to approve your account, check back later!</p>
-			<i>Admins may contact you via email too! Do check your email address occassionally</i>
+			<p>An account has been successfully created!</p>
+			<p>Login again!</p>
 		</div>
 
 		<div class="alert-actions">
@@ -111,6 +107,8 @@
 
 <div class="container h-full mx-auto justify-center items-center">
 
+		<h2 class="h2 m-4">Register for a new account!</h2>
+
 		<UsernameInput bind:disabled={loadingAPI} bind:error={usernameError} bind:value={username} />
 
 		<EmailInput
@@ -121,17 +119,6 @@
 		/>
 
 		<PasswordInput bind:disabled={loadingAPI} bind:error={passwordError} bind:value={password} />
-
-		<label class="mt-3 label">
-			<span>Message</span>
-			<textarea
-				disabled={loadingAPI}
-				class="textarea"
-				rows="4"
-				bind:value={messageToAdmin}
-				placeholder="(Optional) Messages for admins to review"
-			/>
-		</label>
 
 		{#if loadingAPI}
 			<div>
@@ -147,6 +134,13 @@
 		>
 			Register
 		</button>
+
+		<div class="mt-2">
+			<i>
+				Already have an account? <a class="anchor" href="/login">Login</a> instead.
+			</i>
+		</div>
+
 
 		{#if genericError.length !== 0}
 			<p class="text-red-500">{genericError}</p>

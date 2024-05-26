@@ -26,7 +26,7 @@ export async function getUserAuthenticationCSRFToken() {
     }
 
     try {
-        const response = await fetch(`${REST_API_ENDPOINT}/user-api/csrf_token?userAgent=${encodeURIComponent(navigator.userAgent)}`);
+        const response = await fetch(`${REST_API_ENDPOINT}/api-user/csrf_token?userAgent=${encodeURIComponent(navigator.userAgent)}`);
         if (response.ok) {
             const data = await response.json();
             _setAuthenticationToken(data.csrfToken)

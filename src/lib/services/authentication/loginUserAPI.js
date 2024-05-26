@@ -3,13 +3,12 @@ import Cookies from "js-cookie";
 
 /**
  * @param {string} username
- * @param {string} email
  * @param {string} password
  * @param {string} csrfToken
  */
-export async function registerUserAPI(username, email, password, csrfToken) {
+export async function loginUserAPI(username, password, csrfToken, twoFACode = "") {
     try {
-        const response = await fetch(`${REST_API_ENDPOINT}/api-user/register`, {
+        const response = await fetch(`${REST_API_ENDPOINT}/api-user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,8 +17,9 @@ export async function registerUserAPI(username, email, password, csrfToken) {
             body: JSON.stringify({
                 userAgent: navigator.userAgent,
                 username: username,
-                email: email,
                 password: password,
+                '2fa_code': twoFACode,
+                user_agent: navigator.userAgent
             })
         });
 
@@ -28,14 +28,14 @@ export async function registerUserAPI(username, email, password, csrfToken) {
             Cookies.remove("registration_csrf_token")
         }
 
-        if (response.ok || response.status == 409 || response.status == 406) {
+        if (response.ok || (response.status >= 400 && response.status < 500)) {
             const data = await response.json();
             return data;
         } else {
-            throw new Error('Registration failed');
+            throw new Error('Login failed');
         }
     } catch (error) {
         // @ts-ignore
-        throw new Error('Error registering: ' + error.message);
+        throw new Error('Error login: ' + error.message);
     }
 }

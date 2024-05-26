@@ -1,6 +1,6 @@
 <script>
 	import '../app.postcss';
-	import { AppShell, AppBar, initializeStores } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, initializeStores, Toast } from '@skeletonlabs/skeleton';
 	import { getSessionCookie } from '$lib/cookies/sessionCookie';
 	initializeStores();
 
@@ -49,6 +49,8 @@
 
 	const sessionToken = getSessionCookie();
 </script>
+
+<Toast />
 
 <!-- App Shell -->
 <AppShell>
