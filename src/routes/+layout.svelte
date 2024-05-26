@@ -43,7 +43,6 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 	//#endregion
 
-	import SectionSelectors from '$lib/components/appBar/SectionSelectors.svelte';
 	import ThemeSelector from '$lib/components/appBar/ThemeSelector.svelte';
 	import AuthenticationSelector from '$lib/components/appBar/AuthenticationSelector.svelte';
 
@@ -63,9 +62,7 @@
 
 			{#if !isLoginOrRegisterRoute}
 				<!--Show proper navigation if authenticated, otherwise a simple login/register button-->
-				{#if sessionToken !== undefined}
-					<SectionSelectors />
-				{:else}
+				{#if sessionToken === undefined}
 					<AuthenticationSelector />
 				{/if}
 			{/if}

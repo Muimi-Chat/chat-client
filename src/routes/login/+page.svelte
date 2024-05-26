@@ -26,6 +26,7 @@
 
 	import PasswordInput from './passwordInput.svelte';
 	import { loginUserAPI } from '$lib/services/authentication/loginUserAPI';
+	import { setSessionCookie } from '$lib/cookies/sessionCookie';
 	let password = '';
 	let passwordError = '';
 
@@ -53,7 +54,7 @@
 			console.debug(result);
 
 			if (result.status === 'SUCCESS') {
-				Cookies.set('session_token', result.token, { expires: 30, sameSite: 'strict' });
+				setSessionCookie(result.token, 30)
 				// TODO: Maybe redirect after to some other page after few seconds?
 			} else if (result.status === 'TIMEOUT') {
 				const t = {
