@@ -1,4 +1,4 @@
-import { REST_API_ENDPOINT } from "$lib/const";
+import { USER_HTTP_API_ENDPOINT } from "$lib/const";
 import Cookies from "js-cookie";
 
 /**
@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
  */
 export async function registerUserAPI(username, email, password, csrfToken) {
     try {
-        const response = await fetch(`${REST_API_ENDPOINT}/api-user/register`, {
+        const response = await fetch(`${USER_HTTP_API_ENDPOINT}/api-user/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

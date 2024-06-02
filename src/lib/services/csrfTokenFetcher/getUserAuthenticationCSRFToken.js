@@ -1,4 +1,4 @@
-import { REST_API_ENDPOINT } from "$lib/const";
+import { USER_HTTP_API_ENDPOINT } from "$lib/const";
 import Cookies from "js-cookie";
 
 function _getAuthenticationTokenFromCookie(){
@@ -26,7 +26,7 @@ export async function getUserAuthenticationCSRFToken() {
     }
 
     try {
-        const response = await fetch(`${REST_API_ENDPOINT}/api-user/csrf_token?userAgent=${encodeURIComponent(navigator.userAgent)}`);
+        const response = await fetch(`${USER_HTTP_API_ENDPOINT}/api-user/csrf_token?userAgent=${encodeURIComponent(navigator.userAgent)}`);
         if (response.ok) {
             const data = await response.json();
             _setAuthenticationToken(data.csrfToken)
