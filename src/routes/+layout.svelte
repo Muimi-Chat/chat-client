@@ -45,6 +45,7 @@
 
 	import ThemeSelector from '$lib/components/appBar/ThemeSelector.svelte';
 	import AuthenticationSelector from '$lib/components/appBar/AuthenticationSelector.svelte';
+	import UserInfoHeader from '$lib/components/appBar/UserInfoHeader.svelte';
 
 	const sessionToken = getSessionCookie();
 </script>
@@ -61,7 +62,7 @@
 			</svelte:fragment>
 
 			{#if !isLoginOrRegisterRoute}
-				<!--Show proper navigation if authenticated, otherwise a simple login/register button-->
+				<!--A simple login/register button if not registered-->
 				{#if sessionToken === undefined}
 					<AuthenticationSelector />
 				{/if}
@@ -72,6 +73,9 @@
 					<Socials />
 					<ThemeSelector />
 				</div>
+					{#if sessionToken !== undefined}
+						<UserInfoHeader/>
+					{/if}
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>

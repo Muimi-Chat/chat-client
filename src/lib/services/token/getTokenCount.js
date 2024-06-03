@@ -1,4 +1,4 @@
-import { TOKEN_HTTP_API_ENDPOINT } from "$lib/const";
+import { CHAT_HTTP_API_ENDPOINT } from "$lib/const";
 
 /**
  * @param {string} username
@@ -6,11 +6,10 @@ import { TOKEN_HTTP_API_ENDPOINT } from "$lib/const";
  */
 export async function getTokenCount(username, sessionToken) {
     try {
-        const response = await fetch(`${TOKEN_HTTP_API_ENDPOINT}/api-token/current-count?username=${username}`, {
+        const response = await fetch(`${CHAT_HTTP_API_ENDPOINT}/api-chat/token/status?username=${username}`, {
             method: 'GET',
             headers: {
-                'Session-Token': sessionToken,
-                'User-Agent': navigator.userAgent
+                'session-token': sessionToken,
             }
         });
 
@@ -18,6 +17,6 @@ export async function getTokenCount(username, sessionToken) {
         return data;
     } catch (error) {
         // @ts-ignore
-        throw new Error('Error Fetchingt Token: ' + error.message);
+        throw new Error('Error Fetching Token: ' + error.message);
     }
 }

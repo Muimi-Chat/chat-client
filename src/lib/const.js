@@ -6,5 +6,5 @@ const baseWebsocket = `ws${sslEnabled ? "s" : ""}`
 const userApiEndpoint = import.meta.env.VITE_USER_API_ENDPOINT;
 export const USER_HTTP_API_ENDPOINT = `${baseHttp}://${userApiEndpoint}`
 
-const tokenApiEndpoint = import.meta.env.VITE_TOKEN_API_PORT;
-export const TOKEN_HTTP_API_ENDPOINT = `${baseHttp}://${tokenApiEndpoint}`
+const chatApiEndpoint = import.meta.env.VITE_CHAT_API_PORT;
+export const CHAT_HTTP_API_ENDPOINT = `${baseHttp}://${chatApiEndpoint}`

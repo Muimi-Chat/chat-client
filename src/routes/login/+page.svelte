@@ -27,6 +27,7 @@
 	import PasswordInput from './passwordInput.svelte';
 	import { loginUserAPI } from '$lib/services/authentication/loginUserAPI';
 	import { setSessionCookie } from '$lib/cookies/sessionCookie';
+	import { setUsernameCookie } from '$lib/cookies/usernameCookie';
 	let password = '';
 	let passwordError = '';
 
@@ -47,6 +48,7 @@
 		}
 
 		try {
+			const inputUsername = username;
 			loadingAPI = true;
 
 			console.debug(`Using token :: ${csrfToken}`);
@@ -54,6 +56,7 @@
 			console.debug(result);
 
 			if (result.status === 'SUCCESS') {
+				setUsernameCookie(inputUsername)
 				setSessionCookie(result.token, 30)
 				// TODO: Maybe redirect after to some other page after few seconds?
 			} else if (result.status === 'TIMEOUT') {

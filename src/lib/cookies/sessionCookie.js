@@ -8,3 +8,5 @@ export const getSessionCookie = () => Cookies.get('session_token')
  * @param {number} expireInDays 
  */
 export const setSessionCookie = (sessionToken, expireInDays = 7) => Cookies.set('session_token', sessionToken, { expires: expireInDays, sameSite: 'strict'})
+
+export const removeSessionCookie = () => Cookies.remove('session_token', { sameSite: 'strict'})
