@@ -1,5 +1,6 @@
 <script>
 	import Icon from '@iconify/svelte';
+	// @ts-ignore
 	import zxcvbn from 'zxcvbn';
 
 	export let value = '';
@@ -12,13 +13,16 @@
 	let strengthText = '';
 	let strengthColor = 'red';
 
-	$: {
+// @ts-ignore
+		$: {
 		inputClasses =
 			'input-group input-group-divider grid-cols-[1fr_auto]' +
 			(error.length ? ' input-warning' : '');
 	}
 
-	$: {
+// @ts-ignore
+		$: {
+		// @ts-ignore
 		const result = zxcvbn(value);
 		passwordStrength = result.score;
 		strengthText = getPasswordStrengthText(passwordStrength);
@@ -31,7 +35,7 @@
 	}
 
 	function handleBlur() {
-		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$!#%*?&]{8,72}$/;
+		const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,72}$/;
 		if (value.length === 0) {
 			error = 'Password is required';
 		} else if (value.length < 8) {
@@ -40,7 +44,7 @@
 			error = 'Password should not be longer than 72 characters!';
 		} else if (!passwordRegex.test(value)) {
 			error =
-				'Password must contain a lowercase character, uppercase character, one special character and a numerical character';
+				'Password must contain at least one letter and one number!';
 		} else {
 			error = '';
 		}
