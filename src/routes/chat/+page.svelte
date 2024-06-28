@@ -137,8 +137,9 @@
 	 * @param {{ code: string; preventDefault: () => void; }} event
 	 */
 	function onPromptKeydown(event) {
-		if (['Enter'].includes(event.code)) {
-			event.preventDefault();
+		// @ts-ignore
+		if (event.code === 'Enter' && !event.shiftKey) {
+			sendMessage();
 		}
 	}
 
@@ -352,7 +353,7 @@
                     name="prompt"
                     id="prompt"
                     placeholder="Write a message..."
-                    rows="1"
+                    rows="4"
                     on:keydown={onPromptKeydown}
                 ></textarea>
                 <button class={currentMessage ? 'variant-filled-primary' : 'input-group-shim'} disabled={loadingBotMessage || !currentMessage} on:click={sendMessage}>
