@@ -6,6 +6,7 @@ import { CHAT_HTTP_API_ENDPOINT } from "$lib/const";
  */
 export async function getTokenCount(username, sessionToken) {
     try {
+        console.debug(`${CHAT_HTTP_API_ENDPOINT}/api-chat/token/status?username=${username}`);
         const response = await fetch(`${CHAT_HTTP_API_ENDPOINT}/api-chat/token/status?username=${username}`, {
             method: 'GET',
             headers: {

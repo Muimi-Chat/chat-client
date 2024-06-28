@@ -23,6 +23,7 @@
 		const resultStatus = result.status;
 		let toastOptions = undefined;
 
+		console.debug(`Got token count result :: ${resultStatus}`);
 		switch (resultStatus) {
 			case 'SUCCESS':
 				tokenCount = result.token;
@@ -34,8 +35,14 @@
 				};
 				removeSessionCookie();
 				removeUsernameCookie();
-				// TODO: Redirect to login page...
 				break;
+			case 'BAD_SESSION':
+				toastOptions = {
+					message: 'Your session has expired! Try refreshing the page and logging in again!',
+					background: 'variant-filled-error'
+				}
+				removeSessionCookie();
+				removeUsernameCookie();
 			case 'ERROR':
 				toastOptions = {
 					message: 'Unknown error in fetching token. Contact admin if persists!',

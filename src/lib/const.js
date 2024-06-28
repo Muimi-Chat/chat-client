@@ -8,3 +8,5 @@ export const USER_HTTP_API_ENDPOINT = `${baseHttp}://${userApiEndpoint}`
 
 const chatApiEndpoint = import.meta.env.VITE_CHAT_API_PORT;
 export const CHAT_HTTP_API_ENDPOINT = `${baseHttp}://${chatApiEndpoint}`
+
+export const CHAT_WS_API_ENDPOINT = `${baseWebsocket}://${chatApiEndpoint}`

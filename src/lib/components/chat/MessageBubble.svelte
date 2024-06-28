@@ -1,6 +1,10 @@
 <script>
+	import { getUsernameCookie } from '$lib/cookies/usernameCookie';
     import { Avatar } from '@skeletonlabs/skeleton';
-
+	import Markdown from 'svelte-exmarkdown';
+	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
+    
+	const plugins = [gfmPlugin()];
     export let isHost = false
     export let authorName = ""
     export let readableTimestamp = ""
@@ -15,19 +19,25 @@
                 <p class="font-bold">{authorName}</p>
                 <small class="opacity-50">{readableTimestamp}</small>
             </header>
-            <p>{message}</p>
+            <Markdown md={message} plugins={plugins}/>
         </div>
-        <Avatar src="https://i.pravatar.cc/?img=14" width="w-12" />
+		<Avatar
+			initials={getUsernameCookie()}
+			border="border-4 border-surface-200-500-token"
+		/>
     </div>
 {:else}
     <div class="grid grid-cols-[auto_1fr] gap-2">
-        <Avatar src="https://i.pravatar.cc/?img=48" width="w-12" />
+		<Avatar
+			initials={authorName}
+			border="border-4 border-surface-200-500-token"
+		/>
         <div class="card p-4 variant-soft rounded-tl-none space-y-2">
             <header class="flex justify-between items-center">
                 <p class="font-bold">{authorName}</p>
                 <small class="opacity-50">{readableTimestamp}</small>
             </header>
-            <p>{message}</p>
+            <Markdown md={message} plugins={plugins}/>
         </div>
     </div>
 {/if}
