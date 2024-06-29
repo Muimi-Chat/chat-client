@@ -35,7 +35,9 @@
 	let loadingBotMessage = false;
 	let currentMessage = '';
  
-    /**
+	$: exceededMessageLength = currentMessage.length > 2000
+ 
+	/**
 	 * @param {string} sessionToken
 	 * @param {string} username
 	 */
@@ -138,7 +140,7 @@
 	 */
 	function onPromptKeydown(event) {
 		// @ts-ignore
-		if (event.code === 'Enter' && !event.shiftKey) {
+		if (event.code === 'Enter' && !event.shiftKey && !exceededMessageLength) {
 			sendMessage();
 		}
 	}
@@ -278,9 +280,10 @@
 			console.error('WebSocket error:', error);
 		});
   	});
+
 </script>
 
-<div class="chat w-full h-full grid grid-cols-1 lg:grid-cols-[20%_1fr]">
+<div class="chat w-full h-full grid grid-cols-1 lg:grid-cols-[15%_1fr]">
     <div class="hidden lg:grid grid-rows-[auto_1fr_auto] border-r border-surface-500/30">
         <!-- Header -->
         <header class="border-b border-surface-500/30 p-4">
@@ -302,22 +305,22 @@
                 </button>
             <br>
             <small class="mt-9 opacity-50">History</small>
-            <div class="flex flex-col space-y-1">
-                {#each conversations as conversation}
-                    <button
-                        type="button"
-                        class="btn w-full flex items-center space-x-4 {conversation.id === selectedConversationID 
-                            ? 'variant-filled-primary'
-                            : 'bg-surface-hover-token'}"
-                        on:click={() => setConversationID(conversation.id)}
-                        disabled={conversation.id === selectedConversationID}
-                    >
-                        <span class="flex-1 text-right">
-                            {conversation.title.length > 30 ? `${conversation.title.substring(0, 30)}...` : conversation.title}
-                        </span>
-                    </button>
-                {/each}
-            </div>
+				<section bind:this={elemChat} class="h-[600px] max-h-[600px] p-4 overflow-y-auto space-y-4">
+					{#each conversations as conversation}
+						<button
+							type="button"
+							class="btn w-full flex items-center space-x-4 {conversation.id === selectedConversationID 
+								? 'variant-filled-primary'
+								: 'bg-surface-hover-token'}"
+							on:click={() => setConversationID(conversation.id)}
+							disabled={conversation.id === selectedConversationID}
+						>
+							<span class="flex-1 text-right">
+								{conversation.title.length > 30 ? `${conversation.title.substring(0, 30)}...` : conversation.title}
+							</span>
+						</button>
+					{/each}
+				</section>
         </div>
     </div>
     
@@ -349,17 +352,20 @@
                 <button class="input-group-shim">+</button>
                 <textarea
                     bind:value={currentMessage}
-                    class="bg-transparent border-0 ring-0"
+                    class={"bg-transparent border-0 ring-0 " + (exceededMessageLength ? 'input-error' : '')}
                     name="prompt"
                     id="prompt"
                     placeholder="Write a message..."
-                    rows="4"
+                    rows="6"
                     on:keydown={onPromptKeydown}
                 ></textarea>
                 <button class={currentMessage ? 'variant-filled-primary' : 'input-group-shim'} disabled={loadingBotMessage || !currentMessage} on:click={sendMessage}>
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
+			{#if exceededMessageLength}
+				<p class="text-error-500">Exceeded text length limit! (2000)</p>
+			{/if}
         </section>
     </div>
 </div>
