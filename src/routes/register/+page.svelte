@@ -52,9 +52,7 @@
 		try {
 			loadingAPI = true;
 
-			console.debug(`Using token :: ${csrfToken}`)
 			const result = await registerUserAPI(username, email, password, csrfToken);
-			console.debug(result);
 
 			if (result.status === 'SUCCESS') {
 				alertVisible = true;
@@ -63,6 +61,8 @@
 				usernameError = 'The username has been taken!';
 			} else if (result.status === 'EMAIL_TAKEN') {
 				emailError = 'The email has been used! Forgot password?';
+			} else if (result.status === 'COMMON_PASSWORD') {
+				passwordError = 'The password is too common!';
 			} else {
 				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}
