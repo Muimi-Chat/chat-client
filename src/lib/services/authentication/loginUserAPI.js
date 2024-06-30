@@ -5,8 +5,9 @@ import Cookies from "js-cookie";
  * @param {string} username
  * @param {string} password
  * @param {string} csrfToken
+ * @param {string} cloudflareToken
  */
-export async function loginUserAPI(username, password, csrfToken, twoFACode = "") {
+export async function loginUserAPI(username, password, csrfToken, cloudflareToken, twoFACode = "") {
     try {
         const response = await fetch(`${USER_HTTP_API_ENDPOINT}/api-user/login`, {
             method: 'POST',
@@ -19,7 +20,8 @@ export async function loginUserAPI(username, password, csrfToken, twoFACode = ""
                 username: username,
                 password: password,
                 '2fa_code': twoFACode,
-                user_agent: navigator.userAgent
+                user_agent: navigator.userAgent,
+                cloudflare_token: cloudflareToken
             })
         });
 

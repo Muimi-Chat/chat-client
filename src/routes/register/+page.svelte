@@ -8,6 +8,11 @@
     // Store for CSRF token
     let csrfToken = ""
 	onMount(() => {
+		const existingSession = getSessionCookie();
+		if (existingSession) {
+			window.location.href = '/chat';
+		}
+
 		getUserAuthenticationCSRFToken()
 		.then((token) => {
 			csrfToken = token
@@ -16,6 +21,8 @@
 			// TODO: Display error to the user...
 		})
 	});
+
+	let turnstileToken = '';
 
 	import UsernameInput from './usernameInput.svelte';
 	let username = '';
@@ -27,6 +34,9 @@
 	let emailShowLoginInstead = false;
 
 	import PasswordInput from './passwordInput.svelte';
+	import { CLOUDFLARE_SITE_KEY } from '$lib/const';
+	import { Turnstile } from 'svelte-turnstile';
+	import { getSessionCookie } from '$lib/cookies/sessionCookie';
 	let password = '';
 	let passwordError = '';
 
@@ -52,9 +62,7 @@
 		try {
 			loadingAPI = true;
 
-			console.debug(`Using token :: ${csrfToken}`)
-			const result = await registerUserAPI(username, email, password, csrfToken);
-			console.debug(result);
+			const result = await registerUserAPI(username, email, password, csrfToken, turnstileToken);
 
 			if (result.status === 'SUCCESS') {
 				alertVisible = true;
@@ -63,6 +71,10 @@
 				usernameError = 'The username has been taken!';
 			} else if (result.status === 'EMAIL_TAKEN') {
 				emailError = 'The email has been used! Forgot password?';
+			} else if (result.status === 'COMMON_PASSWORD') {
+				passwordError = 'The password is too common!';
+			} else if (result.status === 'INVALID_CLOUDFLARE_TOKEN') {
+				genericError = 'Please complete the cloudflare captcha! Or refresh the page and try again!';
 			} else {
 				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}
@@ -82,6 +94,14 @@
 		username.length === 0 ||
 		email.length === 0 ||
 		password.length === 0;
+
+	/**
+	 * @param {any} result
+	 */
+	function onTurnstileCallbackjs(result) {
+		console.debug("Cloudflare Token GET ::", result.detail.token)
+		turnstileToken = result.detail.token
+	}
 </script>
 
 {#if alertVisible}
@@ -141,6 +161,12 @@
 			</i>
 		</div>
 
+		<br><br>
+
+		<Turnstile
+			siteKey={CLOUDFLARE_SITE_KEY}
+			on:turnstile-callback={onTurnstileCallbackjs}
+		/>
 
 		{#if genericError.length !== 0}
 			<p class="text-red-500">{genericError}</p>
