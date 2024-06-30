@@ -6,10 +6,17 @@
 	import { getUserAuthenticationCSRFToken } from '$lib/services/csrfTokenFetcher/getUserAuthenticationCSRFToken';
 	import Cookies from 'js-cookie';
 
+	import { Turnstile } from 'svelte-turnstile';
+
 	const toastStore = getToastStore();
 	// Store for CSRF token
 	let csrfToken = '';
 	onMount(() => {
+		const existingSession = getSessionCookie();
+		if (existingSession) {
+			window.location.href = '/chat';
+		}
+
 		getUserAuthenticationCSRFToken()
 			.then((token) => {
 				csrfToken = token;
@@ -23,11 +30,13 @@
 	import UsernameInput from './usernameInput.svelte';
 	let username = '';
 	let usernameError = '';
+	let turnstileToken = '';
 
 	import PasswordInput from './passwordInput.svelte';
 	import { loginUserAPI } from '$lib/services/authentication/loginUserAPI';
-	import { setSessionCookie } from '$lib/cookies/sessionCookie';
+	import { getSessionCookie, setSessionCookie } from '$lib/cookies/sessionCookie';
 	import { setUsernameCookie } from '$lib/cookies/usernameCookie';
+	import { CLOUDFLARE_SITE_KEY } from '$lib/const';
 	let password = '';
 	let passwordError = '';
 
@@ -52,13 +61,23 @@
 			loadingAPI = true;
 
 			console.debug(`Using token :: ${csrfToken}`);
-			const result = await loginUserAPI(username, password, csrfToken);
+			const result = await loginUserAPI(username, password, csrfToken, turnstileToken);
 			console.debug(result);
 
 			if (result.status === 'SUCCESS') {
 				setUsernameCookie(inputUsername)
 				setSessionCookie(result.token, 30)
-				// TODO: Maybe redirect after to some other page after few seconds?
+
+				const t = {
+					message: 'Successfully logged in! Redirecting to chat...',
+					timeout: 2000,
+					background: 'variant-filled-success'
+				};
+				toastStore.trigger(t);
+
+				setTimeout(() => {
+					window.location.href = '/chat';
+				}, 2000);
 			} else if (result.status === 'TIMEOUT') {
 				const t = {
 					message: 'Too many attempts made in a short period! Try again later!',
@@ -84,9 +103,10 @@
 					background: 'variant-filled-warning'
 				};
 				toastStore.trigger(t);
+			} else if (result.status === 'INVALID_CLOUDFLARE_TOKEN') {
+				genericError = 'Please complete the cloudflare captcha! Or refresh the page and try again!';
 			} else {
-				genericError =
-					'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
+				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}
 		} catch (error) {
 			// @ts-ignore
@@ -102,6 +122,14 @@
 		passwordError.length !== 0 ||
 		username.length === 0 ||
 		password.length === 0;
+
+	/**
+	 * @param {any} result
+	 */
+	function onTurnstileCallbackjs(result) {
+		console.debug("Cloudflare Token GET ::", result.detail.token)
+		turnstileToken = result.detail.token
+	}
 </script>
 
 <div class="container h-full mx-auto justify-center items-center">
@@ -131,6 +159,12 @@
 		</i>
 	</div>
 
+	<br><br>
+	<Turnstile
+		siteKey={CLOUDFLARE_SITE_KEY}
+		on:turnstile-callback={onTurnstileCallbackjs}
+	/>
+	
 	{#if genericError.length !== 0}
 		<p class="text-red-500">{genericError}</p>
 	{/if}

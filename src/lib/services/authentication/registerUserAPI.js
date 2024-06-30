@@ -6,8 +6,9 @@ import Cookies from "js-cookie";
  * @param {string} email
  * @param {string} password
  * @param {string} csrfToken
+ * @param {string} cloudflareToken
  */
-export async function registerUserAPI(username, email, password, csrfToken) {
+export async function registerUserAPI(username, email, password, csrfToken, cloudflareToken) {
     try {
         const response = await fetch(`${USER_HTTP_API_ENDPOINT}/api-user/register`, {
             method: 'POST',
@@ -20,6 +21,7 @@ export async function registerUserAPI(username, email, password, csrfToken) {
                 username: username,
                 email: email,
                 password: password,
+                cloudflare_token: cloudflareToken
             })
         });
 
@@ -28,7 +30,7 @@ export async function registerUserAPI(username, email, password, csrfToken) {
             Cookies.remove("registration_csrf_token")
         }
 
-        if (response.ok || response.status == 409 || response.status == 406) {
+        if (response.ok || (response.status >= 400 && response.status < 500)) {
             const data = await response.json();
             return data;
         } else {
