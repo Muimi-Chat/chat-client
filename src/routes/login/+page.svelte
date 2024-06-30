@@ -8,6 +8,11 @@
 
 	import { Turnstile } from 'svelte-turnstile';
 
+	/**
+	 * @type {(() => void) | undefined}
+	 */
+	let reset;
+
 	const toastStore = getToastStore();
 	// Store for CSRF token
 	let csrfToken = '';
@@ -108,6 +113,10 @@
 			} else {
 				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}
+
+			if (result.status !== 'SUCCESS') {
+				reset?.()
+			}
 		} catch (error) {
 			// @ts-ignore
 			console.error(error.message);
@@ -161,6 +170,7 @@
 
 	<br><br>
 	<Turnstile
+		bind:reset
 		siteKey={CLOUDFLARE_SITE_KEY}
 		on:turnstile-callback={onTurnstileCallbackjs}
 	/>

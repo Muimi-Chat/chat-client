@@ -5,6 +5,11 @@
 	import { getUserAuthenticationCSRFToken } from '$lib/services/csrfTokenFetcher/getUserAuthenticationCSRFToken';
 	import { registerUserAPI } from '$lib/services/authentication/registerUserAPI';
 
+	/**
+	 * @type {(() => void) | undefined}
+	 */
+	let reset;
+
     // Store for CSRF token
     let csrfToken = ""
 	onMount(() => {
@@ -77,6 +82,10 @@
 				genericError = 'Please complete the cloudflare captcha! Or refresh the page and try again!';
 			} else {
 				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
+			}
+
+			if (result.status !== 'SUCCESS') {
+				reset?.()
 			}
 		} catch (error) {
 			// @ts-ignore
@@ -164,6 +173,7 @@
 		<br><br>
 
 		<Turnstile
+			bind:reset
 			siteKey={CLOUDFLARE_SITE_KEY}
 			on:turnstile-callback={onTurnstileCallbackjs}
 		/>
