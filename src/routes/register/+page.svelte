@@ -123,7 +123,7 @@
 		<div class="alert-message">
 			<h3 class="h3">Account Request Success!</h3>
 			<p>An account has been successfully created!</p>
-			<p>Login again!</p>
+			<p>Please check your email for verification first before login!</p>
 		</div>
 
 		<div class="alert-actions">

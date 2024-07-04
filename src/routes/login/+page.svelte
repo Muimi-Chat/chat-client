@@ -110,6 +110,8 @@
 				toastStore.trigger(t);
 			} else if (result.status === 'INVALID_CLOUDFLARE_TOKEN') {
 				genericError = 'Please complete the cloudflare captcha! Or refresh the page and try again!';
+			} else if (result.status === 'NOT_EMAIL_VERIFIED')  {
+				genericError = 'Please verify your email!';
 			} else {
 				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}

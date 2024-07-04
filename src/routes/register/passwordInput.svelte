@@ -35,7 +35,7 @@
 	}
 
 	function handleBlur() {
-		const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,72}$/;
+		const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_\-\!@#$%^&*]{8,72}$/;
 		if (value.length === 0) {
 			error = 'Password is required';
 		} else if (value.length < 8) {
