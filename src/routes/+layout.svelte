@@ -58,7 +58,9 @@
 		<!-- App Bar -->
 		<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
 			<svelte:fragment slot="lead">
-				<h3 class="h3 ml-auto">Muimi</h3>
+				<a href="../" class="h3-link">
+					<h3 class="h3 ml-auto">Muimi</h3>
+				</a>
 			</svelte:fragment>
 
 			{#if !isLoginOrRegisterRoute}
