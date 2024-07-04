@@ -2,7 +2,8 @@
 
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-10 text-center flex flex-col items-center">
-		<h2 class="h2">Welcome to Skeleton.</h2>
+		<h2 class="h2">Welcome to Muimi Chat!</h2>
+		<h3 class="h3"> A free and open-source application self-hosting a large language model (LLM) chat interface.</h3>
 		<!-- Animated Logo -->
 		<figure>
 			<section class="img-bg" />
