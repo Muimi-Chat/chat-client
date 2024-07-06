@@ -118,10 +118,17 @@
             });
         })
     }
+
+    function gobackChat() {
+        delayedNavigate('/chat', 50)
+    }
 </script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-10 text-center flex flex-col items-center">
+
+        <br>
+        <button type="button" on:click={gobackChat} class="btn-sm variant-ghost">{"<-"} Back to chatting</button>
 
         <h2 class="h2">Settings</h2>
 

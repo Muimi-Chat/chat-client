@@ -1,4 +1,19 @@
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
+<script>
+	import { getSessionCookie } from "$lib/cookies/sessionCookie";
+	import { getUsernameCookie } from "$lib/cookies/usernameCookie";
+	import delayedNavigate from "$lib/delayedNavigate";
+	import { onMount } from "svelte";
+
+	onMount(() => {
+		const username = getUsernameCookie();
+		const sessionToken = getSessionCookie();
+
+		if (username && sessionToken) {
+			delayedNavigate("/chat", 50);
+		}
+	})
+</script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-10 text-center flex flex-col items-center">
