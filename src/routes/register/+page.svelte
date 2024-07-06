@@ -139,14 +139,17 @@
 		<h2 class="h2 m-4">Register for a new account!</h2>
 
 		<UsernameInput bind:disabled={loadingAPI} bind:error={usernameError} bind:value={username} />
+		<p class="text-warning-500">Changing of username is unsupported as of now!</p>
 
+		<h6 class="h6 mt-3">Email</h6>
 		<EmailInput
 			bind:disabled={loadingAPI}
 			bind:showLoginInstead={emailShowLoginInstead}
 			bind:error={emailError}
 			bind:value={email}
 		/>
-
+		
+		<h6 class="h6 mt-3">Password</h6>
 		<PasswordInput bind:disabled={loadingAPI} bind:error={passwordError} bind:value={password} />
 
 		{#if loadingAPI}

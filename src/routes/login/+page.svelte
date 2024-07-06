@@ -37,6 +37,9 @@
 	let usernameError = '';
 	let turnstileToken = '';
 
+	let totpRequired = false;
+	let totpCode = '';
+
 	import PasswordInput from './passwordInput.svelte';
 	import { loginUserAPI } from '$lib/services/authentication/loginUserAPI';
 	import { getSessionCookie, setSessionCookie } from '$lib/cookies/sessionCookie';
@@ -66,7 +69,7 @@
 			loadingAPI = true;
 
 			console.debug(`Using token :: ${csrfToken}`);
-			const result = await loginUserAPI(username, password, csrfToken, turnstileToken);
+			const result = await loginUserAPI(username, password, csrfToken, turnstileToken, totpCode);
 			console.debug(result);
 
 			if (result.status === 'SUCCESS') {
@@ -112,6 +115,11 @@
 				genericError = 'Please complete the cloudflare captcha! Or refresh the page and try again!';
 			} else if (result.status === 'NOT_EMAIL_VERIFIED')  {
 				genericError = 'Please verify your email!';
+			} else if (result.status === 'TOTP_ENABLED') {
+				totpRequired = true;
+				genericError = "TOTP Enabled account, please complete TOTP!"
+			} else if (result.status === 'BAD_TOTP') {
+				genericError = "Bad TOTP Code!"
 			} else {
 				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}
@@ -149,6 +157,13 @@
 	<UsernameInput bind:disabled={loadingAPI} bind:error={usernameError} bind:value={username} />
 
 	<PasswordInput bind:disabled={loadingAPI} bind:error={passwordError} bind:value={password} />
+
+	{#if totpRequired}
+		<h6 class="h6 mt-3">TOTP Code</h6>
+		<input class="input" type="text" bind:value={totpCode} placeholder="Enter current TOTP code" />
+		<p class="text-warning-500">Account has TOTP Enabled!</p>
+	{/if}
+	
 	{#if loadingAPI}
 		<div>
 			<Stretch size="60" color="#FF3E00" unit="px" duration="1s" />
@@ -164,12 +179,6 @@
 		Login
 	</button>
 
-	<div class="mt-2">
-		<i>
-			Don't have an account? <a class="anchor" href="/register">Register</a> instead.
-		</i>
-	</div>
-
 	<br><br>
 	<Turnstile
 		bind:reset
@@ -180,4 +189,11 @@
 	{#if genericError.length !== 0}
 		<p class="text-red-500">{genericError}</p>
 	{/if}
+
+	<br>
+	<div class="mt-2">
+		<i>
+			Don't have an account? <a class="anchor" href="/register">Register</a> instead.
+		</i>
+	</div>
 </div>

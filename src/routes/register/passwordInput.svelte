@@ -91,7 +91,6 @@
 	}
 </script>
 
-<h6 class="h6 mt-3">Password</h6>
 <div class={inputClasses}>
 	<input
 		type={showPassword ? 'text' : 'password'}

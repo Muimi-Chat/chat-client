@@ -1,6 +1,7 @@
 <script>
 	import { getSessionCookie, removeSessionCookie } from '$lib/cookies/sessionCookie';
 	import { getUsernameCookie, removeUsernameCookie } from '$lib/cookies/usernameCookie';
+	import delayedNavigate from '$lib/delayedNavigate';
 	import { getTokenCount } from '$lib/services/token/getTokenCount';
 	import { Avatar } from '@skeletonlabs/skeleton';
 
@@ -55,10 +56,18 @@
 			toastStore.trigger(toastOptions);
 		}
 	}
+
+	function gotoSettings(){
+		delayedNavigate('/settings', 50)
+	}
 </script>
 
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="horizontal-stack">
-	<div class="avatar-container">
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+	<div class="avatar-container" on:click={gotoSettings} tabindex="0">
 		<Avatar
 			initials={username}
 			border="border-4 border-surface-200-500-token hover:!border-primary-400"

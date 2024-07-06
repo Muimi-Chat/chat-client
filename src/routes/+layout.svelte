@@ -1,6 +1,6 @@
 <script>
 	import '../app.postcss';
-	import { AppShell, AppBar, initializeStores, Toast } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, initializeStores, Toast, Modal } from '@skeletonlabs/skeleton';
 	import { getSessionCookie } from '$lib/cookies/sessionCookie';
 	initializeStores();
 
@@ -48,8 +48,16 @@
 	import UserInfoHeader from '$lib/components/appBar/UserInfoHeader.svelte';
 
 	const sessionToken = getSessionCookie();
+
+	import ChangePasswordModal from '$lib/components/modals/ChangePasswordModal.svelte';
+	import ChangeEmailModal from '$lib/components/modals/ChangeEmailModal.svelte';
+	const modalRegistry = {
+		changePasswordModal: { ref: ChangePasswordModal },
+		changeEmailModal: {ref : ChangeEmailModal }
+	};
 </script>
 
+<Modal components={modalRegistry} />
 <Toast />
 
 <!-- App Shell -->
