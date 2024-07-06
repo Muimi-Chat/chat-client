@@ -91,7 +91,7 @@
 		
 		<form class="modal-form {cForm}">
 			<h6 class="h6 mt-3">Old Password</h6>
-			<PasswordInput bind:value={oldPassword} bind:error={oldPasswordError}/>
+			<PasswordInput showPasswordStrength={false} bind:value={oldPassword} bind:error={oldPasswordError}/>
 
 			<h6 class="h6 mt-3">New Password</h6>
 			<PasswordInput bind:value={newPassword} bind:error={newPasswordError}/>

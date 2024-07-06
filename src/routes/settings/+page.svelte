@@ -141,6 +141,13 @@
 
         <button type="button" class="btn variant-filled" on:click={triggerChangePassword}>Change Password</button>
 
+        <br>
+        <div class="mt-2">
+            <i>
+                Forgot password? <a class="anchor" href="/reset-password">reset</a> .
+            </i>
+        </div>
+
         {#if !totpEnabled}
             <button type="button" class="btn variant-filled-success" on:click={() => delayedNavigate('/settings/setup-totp', 50)}>Enable TOTP</button>
         {:else}

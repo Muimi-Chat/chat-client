@@ -88,7 +88,7 @@
 			<EmailInput bind:value={email} bind:error={emailError} showLoginInstead={false}/>
 
 			<h6 class="h6 mt-3">Current Password</h6>
-			<PasswordInput bind:value={password} bind:error={passwordError}/>
+			<PasswordInput showPasswordStrength={false} bind:value={password} bind:error={passwordError}/>
 
 			{#if totpenabled}
 				<label class="label">

@@ -128,7 +128,7 @@
             <input class="input" bind:value={recoveryCodeInput} type="text" placeholder="Any one of the recovery code here..." />
         </label>
 
-        <button type="button" on:click={triggerDisableTotp} class="btn variant-filled-warning">Disable TOTP</button>
+        <button type="button" disabled={loadingAPI} on:click={triggerDisableTotp} class="btn variant-filled-warning">Disable TOTP</button>
 
         <Turnstile
             bind:reset

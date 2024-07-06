@@ -196,4 +196,10 @@
 			Don't have an account? <a class="anchor" href="/register">Register</a> instead.
 		</i>
 	</div>
+	<br>
+	<div class="mt-2">
+		<i>
+			Forgot password? <a class="anchor" href="/reset-password">reset</a> .
+		</i>
+	</div>
 </div>

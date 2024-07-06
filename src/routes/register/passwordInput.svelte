@@ -6,6 +6,7 @@
 	export let value = '';
 	export let error = '';
 	export let disabled = false;
+	export let showPasswordStrength = true;
 
 	let showPassword = false;
 	let inputClasses = 'input-group input-group-divider grid-cols-[1fr_auto]';
@@ -121,10 +122,12 @@
 		</div>
 	{/if}
 </div>
+
 {#if error.length !== 0}
 	<p class="text-red-500">{error}</p>
 {/if}
-{#if value.length > 0}
+
+{#if value.length > 0 && showPasswordStrength}
 	<div class="mt-2">
 		<div
 			class="password-strength-bar"
