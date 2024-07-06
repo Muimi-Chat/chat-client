@@ -30,7 +30,6 @@
     }
 </script>
 
-<h6 class="h6 mt-3">Email</h6>
 <div class={inputClasses}>
     <input type="email" disabled={disabled} placeholder="sample@outlook.com" bind:value on:input={handleChange} on:blur={handleBlur} />
 </div>

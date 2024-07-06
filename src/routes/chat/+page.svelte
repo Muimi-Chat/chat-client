@@ -348,8 +348,7 @@
         </section>
         <!-- Prompt -->
         <section class="border-t border-surface-500/30 p-4">
-            <div class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token">
-                <button class="input-group-shim">+</button>
+            <div class="input-group input-group-divider grid-cols-[95%_5%_auto] rounded-container-token">
                 <textarea
                     bind:value={currentMessage}
                     class={"bg-transparent border-0 ring-0 " + (exceededMessageLength ? 'input-error' : '')}
@@ -360,7 +359,7 @@
                     on:keydown={onPromptKeydown}
                 ></textarea>
                 <button class={currentMessage ? 'variant-filled-primary' : 'input-group-shim'} disabled={loadingBotMessage || !currentMessage} on:click={sendMessage}>
-                    <i class="fa-solid fa-paper-plane"></i>
+                    <i class="fa-solid fa-paper-plane">Send</i>
                 </button>
             </div>
 			{#if exceededMessageLength}

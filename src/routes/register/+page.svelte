@@ -5,6 +5,11 @@
 	import { getUserAuthenticationCSRFToken } from '$lib/services/csrfTokenFetcher/getUserAuthenticationCSRFToken';
 	import { registerUserAPI } from '$lib/services/authentication/registerUserAPI';
 
+	/**
+	 * @type {(() => void) | undefined}
+	 */
+	let reset;
+
     // Store for CSRF token
     let csrfToken = ""
 	onMount(() => {
@@ -78,6 +83,10 @@
 			} else {
 				genericError = 'Unknown Error! Refresh page and try again!\nContact admin if issue persists!';
 			}
+
+			if (result.status !== 'SUCCESS') {
+				reset?.()
+			}
 		} catch (error) {
 			// @ts-ignore
 			console.error(error.message);
@@ -114,7 +123,7 @@
 		<div class="alert-message">
 			<h3 class="h3">Account Request Success!</h3>
 			<p>An account has been successfully created!</p>
-			<p>Login again!</p>
+			<p>Please check your email for verification first before login!</p>
 		</div>
 
 		<div class="alert-actions">
@@ -130,14 +139,17 @@
 		<h2 class="h2 m-4">Register for a new account!</h2>
 
 		<UsernameInput bind:disabled={loadingAPI} bind:error={usernameError} bind:value={username} />
+		<p class="text-warning-500">Changing of username is unsupported as of now!</p>
 
+		<h6 class="h6 mt-3">Email</h6>
 		<EmailInput
 			bind:disabled={loadingAPI}
 			bind:showLoginInstead={emailShowLoginInstead}
 			bind:error={emailError}
 			bind:value={email}
 		/>
-
+		
+		<h6 class="h6 mt-3">Password</h6>
 		<PasswordInput bind:disabled={loadingAPI} bind:error={passwordError} bind:value={password} />
 
 		{#if loadingAPI}
@@ -164,6 +176,7 @@
 		<br><br>
 
 		<Turnstile
+			bind:reset
 			siteKey={CLOUDFLARE_SITE_KEY}
 			on:turnstile-callback={onTurnstileCallbackjs}
 		/>

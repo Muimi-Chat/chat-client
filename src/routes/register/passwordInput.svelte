@@ -6,6 +6,7 @@
 	export let value = '';
 	export let error = '';
 	export let disabled = false;
+	export let showPasswordStrength = true;
 
 	let showPassword = false;
 	let inputClasses = 'input-group input-group-divider grid-cols-[1fr_auto]';
@@ -35,7 +36,7 @@
 	}
 
 	function handleBlur() {
-		const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,72}$/;
+		const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_\-\!@#$%^&*]{8,72}$/;
 		if (value.length === 0) {
 			error = 'Password is required';
 		} else if (value.length < 8) {
@@ -91,7 +92,6 @@
 	}
 </script>
 
-<h6 class="h6 mt-3">Password</h6>
 <div class={inputClasses}>
 	<input
 		type={showPassword ? 'text' : 'password'}
@@ -122,10 +122,12 @@
 		</div>
 	{/if}
 </div>
+
 {#if error.length !== 0}
 	<p class="text-red-500">{error}</p>
 {/if}
-{#if value.length > 0}
+
+{#if value.length > 0 && showPasswordStrength}
 	<div class="mt-2">
 		<div
 			class="password-strength-bar"
