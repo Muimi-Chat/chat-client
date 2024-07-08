@@ -6,10 +6,10 @@
 
 
     function triggerLogout() {
-        removeSessionCookie();
-        removeUsernameCookie();
         requestLogout();
 
+		removeSessionCookie();
+        removeUsernameCookie();
         delayedNavigate('/login', 100);
     }
 </script>
