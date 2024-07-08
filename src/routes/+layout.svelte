@@ -51,6 +51,7 @@
 
 	import ChangePasswordModal from '$lib/components/modals/ChangePasswordModal.svelte';
 	import ChangeEmailModal from '$lib/components/modals/ChangeEmailModal.svelte';
+	import AuthenticatedSelector from '$lib/components/appBar/AuthenticatedSelector.svelte';
 	const modalRegistry = {
 		changePasswordModal: { ref: ChangePasswordModal },
 		changeEmailModal: {ref : ChangeEmailModal }
@@ -75,6 +76,8 @@
 				<!--A simple login/register button if not registered-->
 				{#if sessionToken === undefined}
 					<AuthenticationSelector />
+				{:else}
+					<AuthenticatedSelector/>
 				{/if}
 			{/if}
 
