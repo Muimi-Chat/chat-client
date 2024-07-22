@@ -45,7 +45,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@floating-ui/dom": "^1.6.5",
+    "@floating-ui/dom": "^1.6.7",
     "@mcaptcha/core-glue": "^0.1.0-alpha-5",
     "@mcaptcha/svelte-glue": "^0.1.0-alpha-1",
     "@mcaptcha/vanilla-glue": "^0.1.0-alpha-3",
